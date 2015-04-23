@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jee="http://www.springframework.org/schema/jee"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd 
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd 
+  		http://www.springframework.org/schema/jee 
+  		http://www.springframework.org/schema/jee/spring-jee-2.0.xsd
+        ">
+	<!-- JMS ConnectionFactory to use, configuring the embedded broker using 
+		XML -->
+	<bean id="jmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL">
+			<value>${msg.mq.brokerURL}</value>
+		</property>
+	</bean>
+
+	<bean id="jmsPooledConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
+		<!-- <constructor-arg ref="connectionFactory"></constructor-arg> -->
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+		<property name="maxConnections">
+			<value>${msg.mq.maxConnections}</value>
+		</property>
+	</bean>
+
+	<bean id="jmsSingleConnectionFactory"
+		class="org.springframework.jms.connection.SingleConnectionFactory">
+		<property name="targetConnectionFactory" ref="jmsPooledConnectionFactory" />
+		<property name="reconnectOnException" value="true" />
+	</bean>
+
+	<!-- T-Push queue A-Push -->
+	<bean id="rtdWarnQueue" class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0">
+			<value>${msg.mq.rtdWarnQueue}</value>
+		</constructor-arg>
+	</bean>
+
+	<bean id="rtdWarnJmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="jmsSingleConnectionFactory" />
+		<property name="defaultDestination" ref="rtdWarnQueue" />
+		<property name="sessionTransacted" value="false" />
+	</bean>
+
+	<bean id="rtdWarnMsgSender" class="com.dad.service.msg.RtdWarnMsgSender">
+		<property name="jmsTemplate" ref="rtdWarnJmsTemplate" />
+	</bean>
+	
+</beans>

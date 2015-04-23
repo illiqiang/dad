@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<!--[if lt IE 7 ]><html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" class="ie ie6" lang="zh" > <![endif]-->
+<!--[if IE 7 ]><html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" class="ie ie7" lang="zh"> <![endif]-->
+<!--[if IE 8 ]><html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" class="ie ie8" lang="zh"> <![endif]-->
+<!--[if (gte IE 9)|!(IE)]><!-->
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui" lang="zh">
+<!--<![endif]-->
+
+
+<h:head>
+	<f:facet name="first">
+		<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+
+		<meta name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1" />
+		<title>My web</title>
+	</f:facet>
+	<!--[if lt IE 8]>
+       <div style=' clear: both; text-align:center; position: relative;'>
+         <a href="http://windows.microsoft.com/en-US/internet-explorer/products/ie/home?ocid=ie6_countdown_bannercode">
+           <img src="http://storage.ie6countdown.com/assets/100/images/banners/warning_bar_0000_us.jpg" border="0" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today." />
+        </a>
+      </div>
+    <![endif]-->
+	<!--[if lt IE 9]>
+		<h:outputScript name="html5.js" library="js" />
+		<h:outputScript name="css3-mediaqueries.js" library="js" />
+	<![endif]-->
+	<h:outputStylesheet library="css" name="zerogrid.css" />
+	<h:outputStylesheet library="css" name="style.css" />
+</h:head>
+
+<h:body>
+	<header>
+		<div class="wrap-header zerogrid">
+			<div id="logo">
+				<a href="#"> <h:graphicImage library="images" name="logo_2.png" /></a>
+			</div>
+			<div class="social">
+				<ul>
+					<li><a href="#"> <h:graphicImage library="images"
+								name="social/facebook-icon.png" />
+					</a></li>
+					<li><a href="#"><img
+							src="/resources/images/social/google-icon.png" /></a></li>
+					<li><a href="#"><img
+							src="/resources/images/social/twitter-bird-icon.png" /></a></li>
+					<li><a href="#"><img
+							src="/resources/images/social/rss-icon.png" /></a></li>
+				</ul>
+			</div>
+			<nav>
+				<div class="wrap-nav">
+					<div class="menu">
+						<ul>
+							<li class="current"><a href="index.html">首页</a></li>
+							<li><a href="blog.html">Blog</a></li>
+							<li><a href="gallery.html">Gallery</a></li>
+							<li><a href="single.html">About</a></li>
+							<li><a href="contact.html">Contact</a></li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</header>
+	<ui:insert name="centerContent" />
+	<footer>
+		<div class="wrap-footer zerogrid">
+			<div class="row">
+				<div class="col-1-3">
+					<div class="wrap-col">
+						<div class="box">
+							<div class="heading">
+								<h2>About Us</h2>
+							</div>
+							<div class="content">
+								<p>Free Html5 Templates created More Templates. You can use
+									and modify the template for both personal and commercial use.
+									You must keep all copyright information and credit links in the
+									template and associated files.</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-1-3">
+					<div class="wrap-col">
+						<div class="box">
+							<div class="heading">
+								<h2>Categories</h2>
+							</div>
+							<div class="content">
+								<div class="tag">
+									<a href="#">Iphone 5</a><a href="#">Ipad Mini</a><a href="#">Ipod
+										Touch</a><a href="#">Macbook Air Pro</a><a href="#">Apple
+										Store</a><a href="#">IOS7 Features</a><a href="#">Itunes</a><a
+										href="#">Apple Support</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-1-3">
+					<div class="wrap-col">
+						<div class="box">
+							<div class="heading">
+								<h2>Contact Us</h2>
+							</div>
+							<div class="content">
+								<ul>
+									<li>Address : 0123 Some Street. Country</li>
+									<li>Phone : 000.000.000.000</li>
+									<li>Email : admin@zerotheme.com</li>
+									<li>Website : www.zerotheme.com</li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="copyright">
+			<p>
+				Copyright xx copy; 2014.Company name All rights reserved.<a
+					target="_blank" href="http://sc.chinaz.com/moban/">&#x7F51;&#x9875;&#x6A21;&#x677F;</a>
+			</p>
+		</div>
+	</footer>
+</h:body>
+</html>
+
+

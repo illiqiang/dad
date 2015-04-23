@@ -1,0 +1,53 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+</h:head>
+
+<h:body>
+	<p:layout fullPage="true">
+
+		<p:layoutUnit position="north" size="100" resizable="true"
+			closable="false" collapsible="false">
+			<h:outputText value="数采仪后台管理" style="position:absolute; bottom:10;margin-left:20px;font-size:36px;" />
+			<div style="float:right;margin-right:15px;margin-top:20px;">
+			<h:form>
+			<h:outputText value="欢迎您：#{statusView.userName()}" />
+			<p:spacer width="10"/> 
+			
+				<p:commandLink action="#{statusView.loginOut}" value="退出登录"/>
+			</h:form>
+			</div>
+		</p:layoutUnit>
+
+		<!-- <p:layoutUnit position="south" size="50" header="Bottom"
+			resizable="true" closable="true" collapsible="true">
+			<h:outputText value="South unit content." />
+		</p:layoutUnit> -->
+
+		<p:layoutUnit position="west" size="200" header="#{msgs.navigation_title}"
+			closable="false" collapsible="true">
+			 <ui:include src="/WEB-INF/common/menu.xhtml" />
+		</p:layoutUnit>
+
+		<p:layoutUnit position="center">
+			<p:ajaxStatus onstart="PF('ajaxWait').show()"
+				oncomplete="PF('ajaxWait').hide()" />
+			<p:dialog widgetVar="ajaxWait" modal="true" closable="false"
+				showHeader="false" draggable="false" resizable="false"
+				style="margin:0px;border:0px;" appendTo="@(body)">
+				<h:graphicImage library="images" name="ajax-loader.gif"
+					alt="AJAX Status" />
+			</p:dialog>
+			<ui:insert name="centerContent" />
+		</p:layoutUnit>
+
+	</p:layout>
+</h:body>
+</html>
+
+

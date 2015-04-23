@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+	<!-- 启动触发器的配置开始 -->
+	<bean name="startQuertz" lazy-init="false" autowire="no"
+		class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="deviceOfflineJobTrigger" />
+			</list>
+		</property>
+	</bean>
+	<!-- 启动触发器的配置结束 -->
+
+	<!-- 调度的配置开始 -->
+	<!--
+		quartz-1.8以前的配置 
+	<bean id="myJobTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="jobDetail">
+			<ref bean="myJobDetail" />
+		</property>
+		<property name="cronExpression">
+			<value>0/1 * * * * ?</value>
+		</property>
+	</bean>
+	-->
+	<!-- quartz-2.x的配置 -->
+	<bean id="deviceOfflineJobTrigger"
+		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail">
+			<ref bean="deviceOfflineJobDetail" />
+		</property>
+		<property name="cronExpression">
+			<value>${server.quartz.offline}</value>
+			<!-- <value>0/10 * * * * ?</value> -->
+		</property>
+	</bean>
+	<!-- 调度的配置结束 -->
+
+	<!-- job的配置开始 -->
+	<bean id="deviceOfflineJobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject">
+			<ref bean="deviceOfflineCheckTask" />
+		</property>
+		<property name="targetMethod">
+			<value>execute</value>
+		</property>
+	</bean>
+	<!-- job的配置结束 -->
+
+	<!-- 工作的bean -->
+	<bean id="deviceOfflineCheckTask" class="com.dad.device.server.task.DeviceOfflineCheckTask" >
+		<property name="dadService"  ref="dadService"/>
+	</bean>
+
+</beans>

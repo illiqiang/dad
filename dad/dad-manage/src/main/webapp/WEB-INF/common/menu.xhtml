@@ -1,0 +1,38 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+	<script type="text/javascript">
+		$(document)
+				.ready(
+						function() {
+							//展开第一个
+							var menuIsExpanded = jQuery(
+									'div.ui-panelmenu-content.ui-widget-content.ui-helper-hidden')
+									.is(':visible');
+							if (!menuIsExpanded) {
+								jQuery('.ui-panelmenu-panel a').first().click();
+
+							}
+
+							/*  全部展开
+							$(".ui-panelmenu-content").css("display", "block"); //shows the menuitems
+							$(".ui-panelmenu-header").addClass("ui-state-active"); //sets the submenu header to active state
+							 $(".ui-icon-triangle-1-e").removeClass(
+									"ui-icon-triangle-1-e").addClass(
+									"ui-icon-triangle-1-s"); //sets the triangle icon to "expaned" version  */
+						});
+	</script>
+	<p:panelMenu style="width:300px">
+		<p:submenu label="管理菜单">
+			<p:menuitem value="用户管理" url="/manage/user.do" icon="ui-icon-document" />
+			<p:menuitem value="工厂管理" url="/manage/group.do"
+				icon="ui-icon-document" />
+			<p:menuitem value="设备管理" url="/manage/device.do"
+				icon="ui-icon-document" />
+		</p:submenu>
+	
+	</p:panelMenu>
+</ui:composition>
