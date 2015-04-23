@@ -1,0 +1,85 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/layout.xhtml">
+	<ui:define name="centerContent">
+		<p:breadCrumb>
+			<p:menuitem value="首页" url="#" />
+			<p:menuitem value="设备管理" url="#" />
+		</p:breadCrumb>
+		<p:toolbar>
+			<p:toolbarGroup align="left">
+				<p:commandButton value="新增设备" icon="ui-icon-circle-plus"
+					onclick="PF('addDeviceDlg').show()" type="button" />
+				<p:separator />
+				<h:outputLabel>右键删除记录，谨慎删除,删除前先取消关联关系。</h:outputLabel>
+			</p:toolbarGroup>
+		</p:toolbar>
+		<h:form id="deviceform">
+			<p:growl id="growl" showDetail="true" life="5000" />
+			<p:contextMenu for="deviceTable">
+				<p:menuitem value="删除" update="deviceTable,growl"
+					actionListener="#{deviceView.deleteDevice}" icon="ui-icon-close">
+				</p:menuitem>
+			</p:contextMenu>
+			<p:dataTable var="device" value="#{deviceView.devicePages}" 
+				emptyMessage="没有搜索到用户" rowKey="#{device.deviceId}" paginator="true"
+				paginatorPosition="bottom" rows="15"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				currentPageReportTemplate="#{msgs.paginator_currentPageReportTemplate}"
+				rowsPerPageTemplate="#{msgs.paginator_rowsPerPageTemplate}"
+				selectionMode="single" selection="#{deviceView.selectDevice}"
+				lazy="true" id="deviceTable" filterEvent="enter" >
+			
+				<p:column headerText="设备号(按回车键搜索)" filterBy="#{device.deviceId}"
+					style="width:240px">
+					<h:outputText value="#{device.deviceId}" />
+				</p:column>		
+				<p:column headerText="st" style="width:100px">
+						<h:outputText value="#{device.st}" />
+				</p:column>
+				<p:column headerText="pw" style="width:100px">
+						<h:outputText value="#{device.pw}" />
+				</p:column>
+				<p:column>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+		
+
+		<p:dialog header="新增设备" modal="true" widgetVar="addDeviceDlg"
+			width="410px" height="240px" appendTo="@(body)">
+			<p:ajax event="close" listener="#{deviceView.initAddDevice}" update="addDeviceForm"/>
+			<h:form id="addDeviceForm">
+				<h:panelGrid columns="2" cellpadding="5">
+					<p:outputLabel value="设备号:" for="deviceId" />
+					<p:inputText id="deviceId" value="#{deviceView.addDevice.deviceId}" label="deviceId" required="true"/>
+					<h:outputText value="" />
+					<h:outputText value="" />
+					<f:facet name="footer">
+						<p:commandButton value="提交"
+							update=":deviceform:deviceTable,:deviceform:growl"
+							actionListener="#{deviceView.addDevice}"
+							oncomplete="handleLoginRequest(xhr, status, args)"
+							process="deviceId,@this" icon="ui-icon-disk" />
+						<p:commandButton value="重置" type="reset" process="@this"
+							icon="ui-icon-close" />
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+			<script type="text/javascript">
+			function handleLoginRequest(xhr, status, args) {
+				if (args.validationFailed || !args.isadd) {
+					PF('addDeviceDlg').jq.effect("shake", {
+						times : 5
+					}, 100);
+				} else {
+					PF('addDeviceDlg').hide();
+				}
+			}
+		</script>
+	</ui:define>
+</ui:composition>

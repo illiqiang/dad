@@ -1,0 +1,177 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/layout.xhtml">
+	<ui:define name="centerContent">
+		<p:breadCrumb>
+			<p:menuitem value="首页" url="#" />
+			<p:menuitem value="用户管理" url="#" />
+		</p:breadCrumb>
+		<p:toolbar>
+			<p:toolbarGroup align="left">
+				<p:commandButton value="新增用户" icon="ui-icon-circle-plus"
+					onclick="PF('addUserDlg').show()" type="button" />
+				<p:separator />
+				<h:outputLabel>右键删除记录，谨慎删除，删除前先取消关联工厂。</h:outputLabel>
+			</p:toolbarGroup>
+		</p:toolbar>
+
+
+		<h:form id="userform">
+			<p:growl id="growl" showDetail="true" life="5000" />
+			<p:contextMenu for="userTable">
+				<p:menuitem value="删除" update="userTable,growl"
+					actionListener="#{userView.deleteUser}" icon="ui-icon-close">
+				</p:menuitem>
+			</p:contextMenu>
+
+			<p:dataTable var="user" value="#{userView.userPages}" editable="true"
+				emptyMessage="没有搜索到用户" rowKey="#{user.userId}" paginator="true"
+				paginatorPosition="bottom" rows="15"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				currentPageReportTemplate="#{msgs.paginator_currentPageReportTemplate}"
+				rowsPerPageTemplate="#{msgs.paginator_rowsPerPageTemplate}"
+				selectionMode="single" selection="#{userView.selectedUser}"
+				lazy="true" id="userTable" filterEvent="enter" >
+				<p:ajax event="rowEdit" listener="#{userView.onRowEdit}"
+					update=":userform:growl" />
+				<p:column style="width:16px">
+					<p:rowToggler />
+				</p:column>
+				<p:column headerText="用户ID" style="width:200px">
+					<h:outputText value="#{user.userId}" />
+				</p:column>
+				<p:column headerText="用户名(按回车键搜索)" filterBy="#{user.userName}"
+					style="width:200px">
+					<h:outputText value="#{user.userName}" />
+				</p:column>
+				<p:column headerText="密码" style="width:100px">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="******" />
+						</f:facet>
+						<f:facet name="input">
+							<p:password id="modelInput" value="#{user.passWord}" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column headerText="状态(true表示启用)" style="width:150px">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{user.status}" />
+						</f:facet>
+						<f:facet name="input">
+							<h:selectOneMenu value="#{user.status}" style="width:100%">
+								<f:selectItem itemLabel="启用" itemValue="true"
+									noSelectionOption="true" />
+								<f:selectItem itemLabel="禁用" itemValue="false" />
+							</h:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column style="width:45px" headerText="修改">
+					<p:rowEditor />
+				</p:column>
+
+				<p:column style="width:74px;algin:center" headerText="关联工厂">
+					<p:commandButton style="height:20px;" icon="ui-icon-pencil"
+						title="关联" oncomplete="PF('userGroupsDlg').show()"
+						update=":userGroupsForm:userGroupsPanel,:userGroupsForm:ugtable">
+						<f:setPropertyActionListener value="#{user}"
+							target="#{userView.selectedUser}" />
+					</p:commandButton>
+				</p:column>
+
+				<p:column></p:column>
+
+
+			</p:dataTable>
+		</h:form>
+
+
+		<p:dialog header="新增用户" modal="true" widgetVar="addUserDlg"
+			width="410px" height="340px" appendTo="@(body)">
+			<p:ajax event="close" listener="#{userView.initAddUser}" update="addUserForm"/>
+			<h:form id="addUserForm">
+				<h:panelGrid columns="2" cellpadding="5">
+					<p:outputLabel value="用户名:" for="userName" />
+					<p:inputText id="userName" value="#{userView.addUser.userName}"
+						required="true" label="userName" />
+
+					<p:outputLabel value="初始密码:" for="passWord" />
+					<p:inputText id="passWord" value="#{userView.addUser.passWord}" />
+					<h:outputText value="" />
+					<h:outputText value="" />
+					<f:facet name="footer">
+						<p:commandButton value="提交"
+							update=":userform:userTable,:userform:growl"
+							actionListener="#{userView.addUser}"
+							oncomplete="handleLoginRequest(xhr, status, args)"
+							process="passWord,userName,@this" icon="ui-icon-disk" />
+						<p:commandButton value="重置" type="reset" process="@this"
+							icon="ui-icon-close" />
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="关联工厂" modal="true" widgetVar="userGroupsDlg"
+			width="410px" height="610px" appendTo="@(body)">
+			<h:form id="userGroupsForm">
+				<p:panel id="userGroupsPanel" style="border:0">
+					<h:panelGrid columns="2" cellpadding="5">
+						<p:outputLabel value="用户名:" for="userName" />
+						<h:outputText id="userName"
+							value="#{userView.selectedUser.userName}" />
+						<p:outputLabel value="工厂:" for="groups" />
+						<p:selectManyMenu id="groups" value="#{userView.selecteGroups}"
+							filter="true" filterMatchMode="startsWith" var="t"
+							showCheckbox="true" panelStyle="width:300px;height:200px">
+							<f:selectItems value="#{userView.groupList}" var="g"
+								itemLabel="#{g}" itemValue="#{g}" />
+							<p:column>
+								<h:outputText value="#{t}" />
+							</p:column>
+						</p:selectManyMenu>
+						<f:facet name="footer">
+							<p:commandButton value="添加" update="ugtable,:userform:growl"
+								actionListener="#{userView.addGroups}" process="groups,@this"
+								icon="ui-icon-disk" />
+						</f:facet>
+					</h:panelGrid>
+					<p:dataTable var="ug" value="#{userView.userGroups}" id="ugtable" 
+						emptyMessage="没有关联任何工厂" paginator="true" paginatorPosition="bottom"
+						rows="5" 
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						currentPageReportTemplate="#{msgs.paginator_currentPageReportTemplate}"
+						rowsPerPageTemplate="5" selectionMode="single" selection="#{userView.selectedGroup}" rowKey="#{ug.groupId}">
+						<p:column headerText="工厂ID" >
+							<h:outputText value="#{ug.groupId}" />
+						</p:column>
+						<p:column headerText="关联工厂名">
+							<h:outputText value="#{ug.groupName}" />
+						</p:column>
+					</p:dataTable>
+					<p:contextMenu for="ugtable">
+						<p:menuitem value="删除（慎重）" update="ugtable,:userform:growl"
+						actionListener="#{userView.deleteGroup}" icon="ui-icon-close">
+				</p:menuitem>
+			</p:contextMenu>
+				</p:panel>
+			</h:form>
+		</p:dialog>
+		<script type="text/javascript">
+			function handleLoginRequest(xhr, status, args) {
+				if (args.validationFailed || !args.isadd) {
+					PF('addUserDlg').jq.effect("shake", {
+						times : 5
+					}, 100);
+				} else {
+					PF('addUserDlg').hide();
+				}
+			}
+		</script>
+	</ui:define>
+</ui:composition>

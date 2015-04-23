@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<f:facet name="first">
+		<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+		<title>Login</title>
+	</f:facet>
+	<h:outputStylesheet library="css" name="login.css" />
+</h:head>
+<h:body>
+
+	<h:form id="loginForm">
+		<p:growl id="growl" showDetail="false" sticky="true" />
+		<div class="login_box">
+
+			<table
+				style="width: 500px; cellspacing: 0; cellpadding: 0; border: 0; border-spacing: 4px; border-collapse: separate; border-spacing: 20px;">
+				<tr style="height: 50px">
+					<td align="right" style="width: 100px"><p:outputLabel
+							for="username" value="用户名:" /></td>
+					<td style="width: 150px"><p:inputText id="username"  widgetVar="nameVar"
+							value="#{loginView.username}" required="true" requiredMessage="用户名不可以为空"/>
+					</td>
+				</tr>
+				<tr>
+					<td align="right"><p:outputLabel for="password" value="密码:" />
+					</td>
+					<td><p:password id="password" value="#{loginView.password}" 
+							 required="true" requiredMessage="密码不可以为空"/></td>
+				</tr>
+			</table>
+			<table style="margin-top: 20px; width: 100%" border="0">
+				<tr>
+					<td align="center"><p:commandButton
+							action="#{loginView.login}" value="登录" icon="ui-icon-star"
+							update="growl,username,password" /> &nbsp;&nbsp;&nbsp;&nbsp; <p:commandButton
+							value="重置" icon="ui-icon-arrowrefresh-1-w"
+							type="reset" onclick="PF('nameVar').value();"
+							update="growl,username,password" /></td>
+				</tr>
+			</table>
+
+		</div>
+	</h:form>
+</h:body>
+</html>

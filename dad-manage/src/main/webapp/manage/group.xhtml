@@ -1,0 +1,133 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/layout.xhtml">
+	<ui:define name="centerContent">
+		<p:breadCrumb>
+			<p:menuitem value="首页" url="#" />
+			<p:menuitem value="工厂管理" url="#" />
+		</p:breadCrumb>
+		<p:toolbar>
+			<p:toolbarGroup align="left">
+				<p:commandButton value="新增工厂" icon="ui-icon-circle-plus"
+					onclick="PF('addGroupDlg').show()" type="button" />
+				<p:separator />
+				<h:outputLabel>右键删除记录，谨慎删除,删除前先取消关联设备。</h:outputLabel>
+			</p:toolbarGroup>
+		</p:toolbar>
+		<h:form id="groupform">
+			<p:growl id="growl" showDetail="true" life="5000" />
+			<p:contextMenu for="groupTable">
+				<p:menuitem value="删除" update="groupTable,growl"
+					actionListener="#{groupView.deleteGroup}" icon="ui-icon-close">
+				</p:menuitem>
+			</p:contextMenu>
+			<p:dataTable var="group" value="#{groupView.groupPages}" 
+				emptyMessage="没有搜索到用户" rowKey="#{group.groupId}" paginator="true"
+				paginatorPosition="bottom" rows="15"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				currentPageReportTemplate="#{msgs.paginator_currentPageReportTemplate}"
+				rowsPerPageTemplate="#{msgs.paginator_rowsPerPageTemplate}"
+				selectionMode="single" selection="#{groupView.selectGroup}"
+				lazy="true" id="groupTable" filterEvent="enter" >
+			
+				<p:column headerText="工厂ID" style="width:120px">
+					<h:outputText value="#{group.groupId}" />
+				</p:column>
+				<p:column headerText="工厂名(按回车键搜索)" filterBy="#{group.groupName}"
+					style="width:240px">
+					<h:outputText value="#{group.groupName}" />
+				</p:column>		
+				<p:column style="width:74px;algin:center" headerText="关联设备">
+					<p:commandButton style="height:20px;" icon="ui-icon-pencil"
+						title="关联" oncomplete="PF('groupDevicesDlg').show()"
+						update=":groupDevicesForm:groupDevicesPanel,:groupDevicesForm:gtable">
+						<f:setPropertyActionListener value="#{group}"
+							target="#{groupView.selectGroup}" />
+					</p:commandButton>
+				</p:column>
+				<p:column>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+		
+		<p:dialog header="关联设备" modal="true" widgetVar="groupDevicesDlg"
+			width="410px" height="610px" appendTo="@(body)">
+			<h:form id="groupDevicesForm">
+				<p:panel id="groupDevicesPanel" style="border:0">
+					<h:panelGrid columns="2" cellpadding="5">
+						<p:outputLabel value="工厂名:" for="groupName" />
+						<h:outputText id="groupName"
+							value="#{groupView.selectGroup.groupName}" />
+						<p:outputLabel value="设备:" for="devices" />
+						<p:selectManyMenu id="devices" value="#{groupView.selecteDevices}"
+							filter="true" filterMatchMode="startsWith" var="t"
+							showCheckbox="true" panelStyle="width:300px;height:200px">
+							<f:selectItems value="#{groupView.deviceList}" var="g"
+								itemLabel="#{g}" itemValue="#{g}" />
+							<p:column>
+								<h:outputText value="#{t}" />
+							</p:column>
+						</p:selectManyMenu>
+						<f:facet name="footer">
+							<p:commandButton value="添加" update="gtable,:groupform:growl"
+								actionListener="#{groupView.addDevices}" process="devices,@this"
+								icon="ui-icon-disk" />
+						</f:facet>
+					</h:panelGrid>
+					<p:dataTable var="gd" value="#{groupView.groupDevices}" id="gtable" 
+						emptyMessage="没有关联任何工厂" paginator="true" paginatorPosition="bottom"
+						rows="5" 
+						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						currentPageReportTemplate="#{msgs.paginator_currentPageReportTemplate}"
+						rowsPerPageTemplate="5" selectionMode="single" selection="#{groupView.selecteDevice}" rowKey="#{gd.deviceId}">
+						<p:column headerText="设备ID" >
+							<h:outputText value="#{gd.deviceId}" />
+						</p:column>
+					</p:dataTable>
+					<p:contextMenu for="gtable">
+						<p:menuitem value="删除（慎重）" update="gtable,:groupform:growl"
+						actionListener="#{groupView.deleteDevice}" icon="ui-icon-close">
+					</p:menuitem>
+					</p:contextMenu>
+			
+				</p:panel>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog header="新增工厂" modal="true" widgetVar="addGroupDlg"
+			width="410px" height="240px" appendTo="@(body)">
+			<p:ajax event="close" listener="#{groupView.initAddGroup}" update="addGroupForm"/>
+			<h:form id="addGroupForm">
+				<h:panelGrid columns="2" cellpadding="5">
+					<p:outputLabel value="工厂名称:" for="groupName" />
+					<p:inputText id="groupName" value="#{groupView.addGroup.groupName}" label="groupName" required="true"/>
+					<h:outputText value="" />
+					<h:outputText value="" />
+					<f:facet name="footer">
+						<p:commandButton value="提交"
+							update=":groupform:groupTable,:groupform:growl"
+							actionListener="#{groupView.addGroup}"
+							oncomplete="handleLoginRequest(xhr, status, args)"
+							process="groupName,@this" icon="ui-icon-disk" />
+						<p:commandButton value="重置" type="reset" process="@this"
+							icon="ui-icon-close" />
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+			<script type="text/javascript">
+			function handleLoginRequest(xhr, status, args) {
+				if (args.validationFailed || !args.isadd) {
+					PF('addGroupDlg').jq.effect("shake", {
+						times : 5
+					}, 100);
+				} else {
+					PF('addGroupDlg').hide();
+				}
+			}
+		</script>
+	</ui:define>
+</ui:composition>
