@@ -10,6 +10,7 @@ public class RtdWarn implements Serializable {
 	public static final String OVER = "1";
 	
 	private String code;
+	private String name;
 	private Double rtd;
 	private Double min;
 	private Double max;
@@ -43,6 +44,12 @@ public class RtdWarn implements Serializable {
 	}
 	public void setType(String type) {
 		this.type = type;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 }

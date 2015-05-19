@@ -10,12 +10,14 @@ import org.slf4j.LoggerFactory;
 import com.dad.common.entity.Device;
 import com.dad.common.entity.DevicePollutants;
 import com.dad.common.entity.Group;
+import com.dad.common.entity.Pollutants;
 import com.dad.common.entity.PollutantsCountData;
 import com.dad.common.service.CacheService;
 import com.dad.common.service.DadService;
 import com.dad.common.service.exception.BusinessServiceException;
 import com.dad.common.service.exception.ManageConstant;
 import com.dad.service.dao.DeviceDao;
+import com.dad.service.dao.PollutantDao;
 import com.dad.service.util.CacheKeyUtil;
 
 public class DadServiceImpl implements DadService {
@@ -25,6 +27,8 @@ public class DadServiceImpl implements DadService {
 	private CacheService dadCacheService;
 
 	private DeviceDao deviceDao;
+	
+	private PollutantDao pollutantDao;
 
 	@Override
 	public boolean checkAndUpdateDevice(Device device) throws Exception {
@@ -84,16 +88,8 @@ public class DadServiceImpl implements DadService {
 
 	public List<DevicePollutants> getDevicePollutants(String deviceId)
 			throws Exception {
-		String key = CacheKeyUtil.getDevicePltListKey(deviceId);
 
-		List<DevicePollutants> dplts = dadCacheService.get(key);
-		if (dplts == null) {
-			dplts = deviceDao.getDevicePollutants(deviceId);
-			if (dplts != null) {
-				dadCacheService.set(key, dplts);
-			}
-		}
-		return dplts;
+		return deviceDao.getDevicePollutants(deviceId);
 	}
 
 	@Override
@@ -271,6 +267,69 @@ public class DadServiceImpl implements DadService {
 	@Override
 	public void deleteDevice(String deviceId) throws Exception {
 		deviceDao.deleteDevice(deviceId);
+	}
+	
+	
+
+	
+	@Override
+	public List<Pollutants> getPollutantsByPage(int first, int pages)
+			throws Exception {
+		return pollutantDao.getPollutantsByPage(first, pages);
+	}
+
+	@Override
+	public Pollutants getPollutantById(String dataCode) throws Exception {
+		String cKey = CacheKeyUtil.getPltInfoKey(dataCode);
+		Pollutants plt = dadCacheService.get(cKey);
+		if(plt == null) {
+			plt = pollutantDao.getPollutantById(dataCode);
+			if(plt != null) {
+				dadCacheService.set(cKey, plt);
+			}
+		}
+		return plt;
+	}
+	
+	private void removePltInfoCache(String dataCode) throws Exception {
+		dadCacheService.remove(CacheKeyUtil.getPltInfoKey(dataCode));
+	} 
+
+	@Override
+	public int getPollutantSize() throws Exception {
+		return pollutantDao.getPollutantSize();
+	}
+
+	@Override
+	public void addPollutant(Pollutants d) throws Exception {
+		Pollutants p = pollutantDao.getPollutantById(d.getDataCode());
+		if(p == null) {
+			pollutantDao.addPollutant(d);
+		} else {
+			throw new BusinessServiceException(ManageConstant.PLT_EXISTS);
+		}
+		
+	}
+
+	@Override
+	public void updatePollutant(Pollutants d) throws Exception {
+		pollutantDao.updatePollutant(d);
+		removePltInfoCache(d.getDataCode());
+	}
+
+	@Override
+	public void deletePollutant(String dataCode) throws Exception {
+		pollutantDao.deletePollutant(dataCode);
+		removePltInfoCache(dataCode);
+	}
+
+	public void setPollutantDao(PollutantDao pollutantDao) {
+		this.pollutantDao = pollutantDao;
+	}
+
+	@Override
+	public void updateGroup(Group g) throws Exception {
+		deviceDao.updateGroup(g);
 	}
 
 }

@@ -29,7 +29,7 @@ public class MinuteDataDaoImpl implements MinuteDataDao {
 
 	private static String insertSql = "INSERT IGNORE INTO %s(device_id,data_code,data_time,cou,min,max,avg,zs_min,zs_max,zs_avg) values(?,?,?,?,?,?,?,?,?,?)";
 
-	private static String getMinuteDataSql = "SELECT device_id,data_code,data_time,cou,min,max,avg,zs_min,zs_max,zs_avg FROM %s WHERE device_id=? AND data_code=? AND data_time BETWEEN ? AND ?";
+	private static String getMinuteDataSql = "SELECT device_id,data_code,data_time,cou,min,max,avg,zs_min,zs_max,zs_avg FROM %s WHERE device_id=? AND data_code=? AND data_time BETWEEN ? AND ? ORDER BY data_time ASC";
 
 	@Override
 	public void saveMinuteDatas(final List<PollutantsCountData> counts,

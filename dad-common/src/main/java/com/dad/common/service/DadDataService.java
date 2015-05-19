@@ -2,8 +2,10 @@ package com.dad.common.service;
 
 import java.util.List;
 
+import com.dad.common.entity.MonthCountData;
 import com.dad.common.entity.PollutantsCountData;
 import com.dad.common.entity.PollutantsRtdData;
+import com.dad.common.entity.QuarterCountData;
 
 public interface DadDataService {
 	
@@ -19,7 +21,13 @@ public interface DadDataService {
 	
 	public List<PollutantsCountData> getMinuteDatas(String deviceId, String dataCode, String hourTime)throws Exception;
 	
+	public List<PollutantsCountData> getMinuteDatasByDay(String deviceId, String dataCode, String dayTime)throws Exception;
+	
 	public List<PollutantsCountData> getHourDatas(String deviceId, String dataCode, String dayTime)throws Exception;
 	
 	public List<PollutantsCountData> getDayDatas(String deviceId, String dataCode, String mouthTime)throws Exception;
+	
+	public List<MonthCountData> getMonthDatas(String deviceId, String dataCode, String year) throws Exception ;
+	
+	public List<QuarterCountData> getQuarterDatas(String deviceId, String dataCode, String year) throws Exception ;
 }

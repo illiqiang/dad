@@ -2,17 +2,15 @@ package com.dad.api.response;
 
 import java.util.List;
 
-import com.dad.common.entity.Device;
-
 public class GroupDeviceRsp extends BasicResponse {
 	
-	private List<Device> devices;
+	private List<ApiDevice> devices;
 
-	public List<Device> getDevices() {
+	public List<ApiDevice> getDevices() {
 		return devices;
 	}
 
-	public void setDevices(List<Device> devices) {
+	public void setDevices(List<ApiDevice> devices) {
 		this.devices = devices;
 	}
 	

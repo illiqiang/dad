@@ -13,6 +13,7 @@ public class DevicePollutants implements Serializable {
 	
 	private String dataName;
 	private String dataUnit;
+	private String couUnit;
 
 	public String getDeviceId() {
 		return deviceId;
@@ -60,6 +61,14 @@ public class DevicePollutants implements Serializable {
 
 	public void setDataUnit(String dataUnit) {
 		this.dataUnit = dataUnit;
+	}
+
+	public String getCouUnit() {
+		return couUnit;
+	}
+
+	public void setCouUnit(String couUnit) {
+		this.couUnit = couUnit;
 	}
 
 }

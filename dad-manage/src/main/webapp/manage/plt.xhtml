@@ -1,0 +1,129 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/layout.xhtml">
+	<ui:define name="centerContent">
+		<p:breadCrumb>
+			<p:menuitem value="首页" url="#" />
+			<p:menuitem value="系统管理" url="#" />
+			<p:menuitem value="污染物管理" url="#" />
+		</p:breadCrumb>
+		<p:toolbar>
+			<p:toolbarGroup align="left">
+				<p:commandButton value="新增污染物" icon="ui-icon-circle-plus"
+					onclick="PF('addPltDlg').show()" type="button" />
+				<p:separator />
+				<h:outputLabel>右键删除记录，谨慎删除,删除前先取消关联关系。</h:outputLabel>
+			</p:toolbarGroup>
+		</p:toolbar>
+		<h:form id="pltform">
+			<p:growl id="growl" showDetail="true" life="5000" />
+			<p:contextMenu for="pltTable">
+				<p:menuitem value="删除" update="pltTable,growl"
+					actionListener="#{pltView.deletePlt}" icon="ui-icon-close">
+				</p:menuitem>
+			</p:contextMenu>
+			<p:dataTable var="plt" value="#{pltView.pltPages}" editable="true"
+				emptyMessage="没有搜索到污染物" rowKey="#{plt.dataCode}" paginator="true"
+				paginatorPosition="bottom" rows="15"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				currentPageReportTemplate="#{msgs.paginator_currentPageReportTemplate}"
+				rowsPerPageTemplate="#{msgs.paginator_rowsPerPageTemplate}"
+				selectionMode="single" selection="#{pltView.selectPlt}" lazy="true"
+				id="pltTable" filterEvent="enter">
+				<p:ajax event="rowEdit" listener="#{pltView.onRowEdit}"
+					update=":pltform:growl" />
+				<p:column selectionMode="single" style="width:16px;text-align:center"/>
+				<p:column headerText="污染物代码(按回车键搜索)" filterBy="#{plt.dataCode}"
+					style="width:240px">
+					<h:outputText value="#{plt.dataCode}" />
+				</p:column>
+				<p:column headerText="污染物名称" style="width:160px">
+					<p:cellEditor>
+               			<f:facet name="output"><h:outputText value="#{plt.dataName}" /></f:facet>
+               			<f:facet name="input"><p:inputText value="#{plt.dataName}" style="width:100%" label="dataName"/></f:facet>
+          			 </p:cellEditor>
+				</p:column>
+				<p:column headerText="污染物类别" style="width:160px">
+					 <p:cellEditor>
+		               <f:facet name="output">
+							<h:outputText value="#{plt.type}" />
+		        			</f:facet>
+		               		<f:facet name="input">
+		                   <p:selectOneMenu  value="#{plt.type}" style="width:100%">
+								<f:selectItems value="#{pltView.pltTypes}" var="p" itemLabel="#{p.name}" itemValue="#{p.code}"/>
+						   </p:selectOneMenu>
+		               </f:facet>
+		           </p:cellEditor>
+				</p:column>
+				<p:column headerText="污染物单位" style="width:160px">
+					<p:cellEditor>
+               			<f:facet name="output"><h:outputText value="#{plt.dataUnit}" /></f:facet>
+               			<f:facet name="input"><p:inputText value="#{plt.dataUnit}" style="width:100%" label="dataUnit"/></f:facet>
+          			 </p:cellEditor>
+				</p:column>
+				<p:column headerText="总量单位" style="width:160px">
+					<p:cellEditor>
+               			<f:facet name="output"><h:outputText value="#{plt.couUnit}" /></f:facet>
+               			<f:facet name="input"><p:inputText value="#{plt.couUnit}" style="width:100%" label="couUnit"/></f:facet>
+          			 </p:cellEditor>
+				</p:column>
+				<p:column style="width:45px" headerText="修改">
+					<p:rowEditor />
+				</p:column>
+				<p:column>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+
+
+		<p:dialog header="新增设备" modal="true" widgetVar="addPltDlg"
+			width="460px" height="340px" appendTo="@(body)">
+			<p:ajax event="close" listener="#{pltView.initAddPlt}"
+				update="addPltForm" />
+			<h:form id="addPltForm">
+				<h:panelGrid columns="2" cellpadding="5">
+					<p:outputLabel value="污染物代码:" for="dataCode" />
+					<p:inputText id="dataCode" value="#{pltView.addPlt.dataCode}"
+						label="dataCode" required="true" />
+					<p:outputLabel value="污染物名称" for="dataName" />
+					<p:inputText id="dataName" value="#{pltView.addPlt.dataName}"
+						label="dataName" required="true" />
+					<p:outputLabel value="污染物类别" for="type" />
+					<p:selectOneMenu id="type"   value="#{pltView.addPlt.type}" >
+						<f:selectItems value="#{pltView.pltTypes}" var="p" itemLabel="#{p.name}" itemValue="#{p.code}"/>
+					</p:selectOneMenu>
+					<p:outputLabel value="污染物单位" for="dataUnit" />
+					<p:inputText id="dataUnit" value="#{pltView.addPlt.dataUnit}"
+						label="dataUnit" />
+					<p:outputLabel value="总量单位" for="couUnit" />
+					<p:inputText id="couUnit" value="#{pltView.addPlt.couUnit}"
+						label="dataUnit" />
+					<f:facet name="footer">
+						<p:commandButton value="提交"
+							update=":pltform:pltTable,:pltform:growl"
+							actionListener="#{pltView.addPlt}"
+							oncomplete="handleLoginRequest(xhr, status, args)"
+							process="dataCode,dataName,type,dataUnit,couUnit,@this" icon="ui-icon-disk" />
+						<p:commandButton value="重置" type="reset" process="@this"
+							icon="ui-icon-close" />
+					</f:facet>
+				</h:panelGrid>
+			</h:form>
+		</p:dialog>
+		<script type="text/javascript">
+			function handleLoginRequest(xhr, status, args) {
+				if (args.validationFailed || !args.isadd) {
+					PF('addPltDlg').jq.effect("shake", {
+						times : 5
+					}, 100);
+				} else {
+					PF('addPltDlg').hide();
+				}
+			}
+		</script>
+	</ui:define>
+</ui:composition>

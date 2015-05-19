@@ -31,6 +31,7 @@ public interface DeviceDao {
 	public int getGroupSize();
 	public List<Long> getGroupUserIds(long groupId) throws Exception;
 	public void addGroup(Group g) throws Exception;
+	public void updateGroup(Group g) throws Exception;
 	public void deleteGroup(long groupId) throws Exception;
 	public List<String> getDeviceIdList() throws Exception;
 	public void saveGroupDevices(long groupId, List<String> devices) throws Exception;

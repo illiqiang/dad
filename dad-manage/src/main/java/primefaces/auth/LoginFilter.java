@@ -31,6 +31,12 @@ public class LoginFilter implements Filter {
 		needLoginUris.add("/manage/user.do");
 		needLoginUris.add("/manage/group.do");
 		needLoginUris.add("/manage/device.do");
+		needLoginUris.add("/manage/plt.do");
+		
+		needLoginUris.add("/search/rtddata.do");
+		needLoginUris.add("/search/minutedata.do");
+		needLoginUris.add("/search/hourdata.do");
+		needLoginUris.add("/search/daydata.do");
 	}
 
 	@Override

@@ -26,13 +26,21 @@
 						});
 	</script>
 	<p:panelMenu style="width:300px">
-		<p:submenu label="管理菜单">
+		<p:submenu label="系统管理">
 			<p:menuitem value="用户管理" url="/manage/user.do" icon="ui-icon-document" />
 			<p:menuitem value="工厂管理" url="/manage/group.do"
 				icon="ui-icon-document" />
 			<p:menuitem value="设备管理" url="/manage/device.do"
 				icon="ui-icon-document" />
+			<p:menuitem value="污染物管理" url="/manage/plt.do"
+				icon="ui-icon-document" />
 		</p:submenu>
-	
+		
+		<p:submenu label="数据查询">
+			<p:menuitem value="实时数据查询" url="/search/rtddata.do" icon="ui-icon-document" />
+			<p:menuitem value="分钟数据查询" url="/search/minutedata.do" icon="ui-icon-document" />
+			<p:menuitem value="小时数据查询" url="/search/hourdata.do" icon="ui-icon-document" />
+			<p:menuitem value="天数据查询" url="/search/daydata.do" icon="ui-icon-document" />
+		</p:submenu>
 	</p:panelMenu>
 </ui:composition>

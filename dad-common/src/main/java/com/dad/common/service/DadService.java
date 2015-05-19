@@ -5,6 +5,7 @@ import java.util.List;
 import com.dad.common.entity.Device;
 import com.dad.common.entity.DevicePollutants;
 import com.dad.common.entity.Group;
+import com.dad.common.entity.Pollutants;
 import com.dad.common.entity.PollutantsCountData;
 
 public interface DadService {
@@ -40,6 +41,8 @@ public interface DadService {
 	
 	public void saveUserGroups(List<Long> groupIds, long userId) throws Exception;
 	
+	public void updateGroup(Group g) throws Exception;
+	
 	public void deleteUserGroup(long userId, long groupId) throws Exception;
 	
 	public List<Group> getGroupByPage(int first, int pages) throws Exception;
@@ -66,4 +69,14 @@ public interface DadService {
 	public void addDevice(Device d) throws Exception;
 	public List<Long> getGroupIdByDevice(String deviceId) throws Exception;
 	public void deleteDevice(String deviceId) throws Exception;
+	
+	
+	//Pollutant
+	public List<Pollutants> getPollutantsByPage(int first, int pages) throws Exception;
+	public Pollutants getPollutantById(String dataCode) throws Exception;
+	public int getPollutantSize() throws Exception;
+	public void addPollutant(Pollutants d) throws Exception;
+	public void updatePollutant(Pollutants d) throws Exception;
+	public void deletePollutant(String dataCode) throws Exception;
+	
 }

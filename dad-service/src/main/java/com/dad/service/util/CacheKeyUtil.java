@@ -9,6 +9,12 @@ public class CacheKeyUtil {
 	private static String sessionKey = "c_session+%s";
 	private static String userSessionKey = "c_user_session+%s";
 	
+	private static String pltInfoKey = "c_plt_info+%s";
+	
+	public static String getPltInfoKey(String code) {
+		return String.format(pltInfoKey, code);
+	}
+	
 	public static String getDeviceKey(String deviceId) {
 		return String.format(deviceKey, deviceId);
 	}

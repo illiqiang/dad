@@ -7,6 +7,7 @@
 	<ui:define name="centerContent">
 		<p:breadCrumb>
 			<p:menuitem value="首页" url="#" />
+			<p:menuitem value="系统管理" url="#" />
 			<p:menuitem value="工厂管理" url="#" />
 		</p:breadCrumb>
 		<p:toolbar>
@@ -25,7 +26,7 @@
 				</p:menuitem>
 			</p:contextMenu>
 			<p:dataTable var="group" value="#{groupView.groupPages}" 
-				emptyMessage="没有搜索到用户" rowKey="#{group.groupId}" paginator="true"
+				emptyMessage="没有搜索到工厂" rowKey="#{group.groupId}" paginator="true"
 				paginatorPosition="bottom" rows="15"
 				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				currentPageReportTemplate="#{msgs.paginator_currentPageReportTemplate}"
@@ -78,11 +79,14 @@
 						</f:facet>
 					</h:panelGrid>
 					<p:dataTable var="gd" value="#{groupView.groupDevices}" id="gtable" 
-						emptyMessage="没有关联任何工厂" paginator="true" paginatorPosition="bottom"
+						emptyMessage="没有关联任何设备" paginator="true" paginatorPosition="bottom"
 						rows="5" 
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						currentPageReportTemplate="#{msgs.paginator_currentPageReportTemplate}"
 						rowsPerPageTemplate="5" selectionMode="single" selection="#{groupView.selecteDevice}" rowKey="#{gd.deviceId}">
+						<f:facet name="header">
+           					 已关联设备
+       					</f:facet>
 						<p:column headerText="设备ID" >
 							<h:outputText value="#{gd.deviceId}" />
 						</p:column>

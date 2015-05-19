@@ -1,0 +1,104 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/layout.xhtml">
+	<ui:define name="centerContent">
+		<p:breadCrumb>
+			<p:menuitem value="首页" url="#" />
+			<p:menuitem value="数据查询" url="#" />
+			<p:menuitem value="天数据查询" url="#" />
+		</p:breadCrumb>
+		
+		<h:form id="pltform">
+			<p:growl id="growl" showDetail="true" life="5000" />
+			<p:toolbar>
+			<p:toolbarGroup align="left">
+			<p:outputLabel value="企业名称:" for="groupId" />
+			<p:selectOneMenu id="groupId"
+								value="#{dayDataView.groupId}">
+								<p:ajax listener="#{dayDataView.groupSelect}"
+									update="deviceId,growl" />
+								<f:selectItem itemLabel="请选择" itemValue="" />
+								<f:selectItems value="#{dayDataView.groups}" var="it"
+									itemLabel="#{it.groupName}" itemValue="#{it.groupId}" />
+			</p:selectOneMenu>
+						   <p:separator />
+			<p:outputLabel value="排放口:" for="deviceId" />
+			<p:selectOneMenu id="deviceId" style="width:240px"
+								value="#{dayDataView.deviceId}">
+								<p:ajax listener="#{dayDataView.deviceSelect}"
+									update="dataCode,growl" />
+								<f:selectItem itemLabel="请选择" itemValue="" />
+								<f:selectItems value="#{dayDataView.devices}" var="it"
+									itemLabel="#{it.pw}" itemValue="#{it.deviceId}" />
+									</p:selectOneMenu>
+			<p:separator />
+			<p:outputLabel value="污染物:" for="dataCode" />
+			<p:selectOneMenu id="dataCode" style="width:200px"
+								value="#{dayDataView.dataCode}">
+								<f:selectItem itemLabel="请选择" itemValue="" />
+								<f:selectItems value="#{dayDataView.plts}" var="it"
+									itemLabel="#{it.dataName}" itemValue="#{it.dataCode}" />
+				</p:selectOneMenu>
+			<p:separator />
+			<p:outputLabel value="年份:" for="year" />
+			<p:selectOneMenu id="year" value="#{dayDataView.year}" style="width:80px">
+					<f:selectItems value="#{dayDataView.allYear}" var="p" itemLabel="#{p}" itemValue="#{p}"/>
+			</p:selectOneMenu>
+			<p:separator />
+			<p:outputLabel value="月份:" for="month" />
+			<p:selectOneMenu id="month" value="#{dayDataView.month}" style="width:80px">
+					<f:selectItems value="#{dayDataView.allMonth}" var="p" itemLabel="#{p}" itemValue="#{p}"/>
+			</p:selectOneMenu>
+			<p:separator />
+			<p:commandButton value="查询" update="dataTable,growl" actionListener="#{dayDataView.refreshData}" />
+			</p:toolbarGroup>
+			</p:toolbar>
+			
+			<p:dataTable var="d" value="#{dayDataView.dayDatas}" editable="true" id="dataTable"
+				emptyMessage="没有搜索到数据" paginator="true"
+				paginatorPosition="bottom" rows="15"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				currentPageReportTemplate="#{msgs.paginator_currentPageReportTemplate}"
+				rowsPerPageTemplate="#{msgs.paginator_rowsPerPageTemplate}" lazy="false">
+				<p:column headerText="设备号" style="width:140px">
+					<h:outputText value="#{d.deviceId}" />
+				</p:column>
+				<p:column headerText="污染物" style="width:60px">
+					<h:outputText value="#{d.code}" />
+				</p:column>
+				<p:column headerText="时间" style="width:160px">
+					<h:outputText value="#{d.dataTime}" >
+					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" timeZone="GMT+8"/>
+					</h:outputText>
+				</p:column>
+				
+				<p:column headerText="总量" style="width:80px">
+					<h:outputText value="#{d.cou}" />
+				</p:column>
+				<p:column headerText="平均值" style="width:80px">
+					<h:outputText value="#{d.avg}" />
+				</p:column>
+				<p:column headerText="最小值" style="width:60px">
+					<h:outputText value="#{d.min}" />
+				</p:column>
+				<p:column headerText="最大值" style="width:60px">
+					<h:outputText value="#{d.max}" />
+				</p:column>
+				<p:column headerText="折算平均值" style="width:90px">
+					<h:outputText value="#{d.zsAvg}" />
+				</p:column>
+				<p:column headerText="折算最小值" style="width:90px">
+					<h:outputText value="#{d.zsMin}" />
+				</p:column>
+				<p:column headerText="折算最大值" style="width:90px">
+					<h:outputText value="#{d.zsMax}" />
+				</p:column>
+				<p:column>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>

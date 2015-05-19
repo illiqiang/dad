@@ -35,4 +35,7 @@
 		interface="com.dad.common.service.UserService" version="1.0"/>
 	<dubbo:reference id="dadService"
 		interface="com.dad.common.service.DadService" version="1.0"/>
+	<dubbo:reference id="dadDataService"
+		interface="com.dad.common.service.DadDataService" version="1.0"/>
+		
 </beans>

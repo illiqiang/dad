@@ -1,0 +1,85 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/WEB-INF/templates/layout.xhtml">
+	<ui:define name="centerContent">
+		<p:breadCrumb>
+			<p:menuitem value="首页" url="#" />
+			<p:menuitem value="数据查询" url="#" />
+			<p:menuitem value="实时数据查询" url="#" />
+		</p:breadCrumb>
+
+		<h:form id="pltform">
+			<p:growl id="growl" showDetail="true" life="5000" />
+			<p:toolbar>
+				<p:toolbarGroup align="left">
+						<p:outputLabel value="企业名称:" for="groupId" />
+			<p:selectOneMenu id="groupId"
+								value="#{rtdDataView.groupId}">
+								<p:ajax listener="#{rtdDataView.groupSelect}"
+									update="deviceId,growl" />
+								<f:selectItem itemLabel="请选择" itemValue="" />
+								<f:selectItems value="#{rtdDataView.groups}" var="it"
+									itemLabel="#{it.groupName}" itemValue="#{it.groupId}" />
+			</p:selectOneMenu>
+					<p:separator />	   
+			<p:outputLabel value="排放口:" for="deviceId" />
+			<p:selectOneMenu id="deviceId" style="width:240px"
+								value="#{rtdDataView.deviceId}">
+								<p:ajax listener="#{rtdDataView.deviceSelect}"
+									update="dataCode,growl" />
+								<f:selectItem itemLabel="请选择" itemValue="" />
+								<f:selectItems value="#{rtdDataView.devices}" var="it"
+									itemLabel="#{it.pw}" itemValue="#{it.deviceId}" />
+									</p:selectOneMenu>
+			<p:separator />
+			<p:outputLabel value="污染物:" for="dataCode" />
+			<p:selectOneMenu id="dataCode" style="width:200px"
+								value="#{rtdDataView.dataCode}">
+								<f:selectItem itemLabel="请选择" itemValue="" />
+								<f:selectItems value="#{rtdDataView.plts}" var="it"
+									itemLabel="#{it.dataName}" itemValue="#{it.dataCode}" />
+				</p:selectOneMenu>
+					<p:separator />
+					<p:commandButton value="查询" update="dataGrid,growl"
+						actionListener="#{rtdDataView.refreshData}" />
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:panelGrid  id="dataGrid" style="width:400px">
+				<p:row>
+					<p:column style="width:100px">
+						<h:outputText value="设备号:" />
+					</p:column>
+					<p:column style="width:300px">
+						<h:outputText value="#{rtdDataView.rtdData.deviceId}" />
+					</p:column>
+				</p:row>
+				<p:row>
+					<p:column style="width:100px"><h:outputText value="污染物:" /></p:column>
+					<p:column style="width:300px"><h:outputText value="#{rtdDataView.rtdData.code}" /></p:column>
+				</p:row>
+				<p:row>
+					<p:column style="width:100px"><h:outputText value="时间:" /></p:column>
+					<p:column style="width:300px"><h:outputText value="#{rtdDataView.rtdData.dataTime}" ><f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" timeZone="GMT+8" /></h:outputText></p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column><h:outputText value="值:" /></p:column>
+					<p:column><h:outputText value="#{rtdDataView.rtdData.rtd}" /></p:column>
+				</p:row>
+
+				<p:row>
+					<p:column><h:outputText value="折算值:" /></p:column>
+					<p:column><h:outputText value="#{rtdDataView.rtdData.zsRtd}" /></p:column>
+				</p:row>
+				<p:row>
+					<p:column><h:outputText value="FLAG:" /></p:column>
+					<p:column><h:outputText value="#{rtdDataView.rtdData.flag}" /></p:column>
+				</p:row>
+			</p:panelGrid>
+		</h:form>
+	</ui:define>
+</ui:composition>

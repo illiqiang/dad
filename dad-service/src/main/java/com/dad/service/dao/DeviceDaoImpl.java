@@ -7,8 +7,6 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -22,11 +20,9 @@ import com.dad.common.entity.Group;
 
 public class DeviceDaoImpl implements DeviceDao {
 
-	public static Logger log = LoggerFactory.getLogger(DeviceDaoImpl.class);
-
 	private JdbcTemplate baseTemplate;
 
-	private static final String getDevicePltListSql = "SELECT d.device_id,d.data_code,d.warn_min,d.warn_max,p.data_name,p.data_unit FROM tb_device_pollutants d LEFT JOIN tb_pollutants p ON d.data_code= p.data_code WHERE device_id=?";
+	private static final String getDevicePltListSql = "SELECT d.device_id,d.data_code,d.warn_min,d.warn_max,p.data_name,p.data_unit,p.cou_unit FROM tb_device_pollutants d LEFT JOIN tb_pollutants p ON d.data_code= p.data_code WHERE device_id=?";
 
 	private static final String getDevicePltSql = "SELECT  device_id, data_code, warn_min, warn_max FROM tb_device_pollutants WHERE device_id=? AND data_code=?";
 	
@@ -72,6 +68,7 @@ public class DeviceDaoImpl implements DeviceDao {
 						}
 						dlt.setDataName(rs.getString(5));
 						dlt.setDataUnit(rs.getString(6));
+						dlt.setCouUnit(rs.getString(7));
 						return dlt;
 					}
 
@@ -454,6 +451,13 @@ public class DeviceDaoImpl implements DeviceDao {
 	@Override
 	public void deleteDevice(String deviceId) throws Exception {
 		baseTemplate.update(deleteDeviceSql, new Object[]{deviceId});
+	}
+
+	
+	private final static String updateGroupSql = "update tb_group set group_name=? where group_id=?";
+	@Override
+	public void updateGroup(Group g) throws Exception {
+		baseTemplate.update(updateGroupSql, new Object[]{g.getGroupName(), g.getGroupName()});
 	}
 
 }

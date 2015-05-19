@@ -8,7 +8,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.dad.api.response.BasicResponse;
+import com.dad.api.response.GroupDeviceRsp;
 import com.dad.api.response.LoginRsp;
+import com.dad.api.response.MonthDataRsp;
+import com.dad.api.response.QuarterDataRsp;
 import com.dad.api.response.UserGroupRsp;
 import com.rop.client.ClientRequest;
 import com.rop.client.CompositeResponse;
@@ -144,8 +147,8 @@ public class ApiTest {
 	public void groupdevice() {
 		Map<String, Object> bindParams = new HashMap<String, Object>();
 		bindParams.put("groupId", "100003");
-		CompositeResponse<BasicResponse> loginRsp = ropGet(sessionId,
-				bindParams, BasicResponse.class, "dad.groupdevice");
+		CompositeResponse<GroupDeviceRsp> loginRsp = ropGet(sessionId,
+				bindParams, GroupDeviceRsp.class, "dad.groupdevice");
 	}
 	
 	@Test
@@ -187,6 +190,16 @@ public class ApiTest {
 	}
 	
 	@Test
+	public void minutedatabyday() {
+		Map<String, Object> bindParams = new HashMap<String, Object>();
+		bindParams.put("deviceId", "88888880000001");
+		bindParams.put("dataCode", "01");
+		bindParams.put("day", "20150531");
+		CompositeResponse<BasicResponse> loginRsp = ropGet(sessionId,
+				bindParams, BasicResponse.class, "dad.minutedatabyday");
+	}
+	
+	@Test
 	public void hourdata() {
 		Map<String, Object> bindParams = new HashMap<String, Object>();
 		bindParams.put("deviceId", "88888880000001");
@@ -206,4 +219,23 @@ public class ApiTest {
 				bindParams, BasicResponse.class, "dad.daydata");
 	}
 	
+	@Test
+	public void monthdata() {
+		Map<String, Object> bindParams = new HashMap<String, Object>();
+		bindParams.put("deviceId", "88888880000001");
+		bindParams.put("dataCode", "01");
+		bindParams.put("year", "2015");
+		CompositeResponse<MonthDataRsp> loginRsp = ropGet(sessionId,
+				bindParams, MonthDataRsp.class, "dad.monthdata");
+	}
+	
+	@Test
+	public void quarterdata() {
+		Map<String, Object> bindParams = new HashMap<String, Object>();
+		bindParams.put("deviceId", "88888880000004");
+		bindParams.put("dataCode", "01");
+		bindParams.put("year", "2015");
+		CompositeResponse<QuarterDataRsp> loginRsp = ropGet(sessionId,
+				bindParams, QuarterDataRsp.class, "dad.quarterdata");
+	}
 }

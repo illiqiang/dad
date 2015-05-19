@@ -15,7 +15,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 
+import com.dad.common.entity.MonthCountData;
 import com.dad.common.entity.PollutantsCountData;
+import com.dad.common.entity.QuarterCountData;
 import com.dad.service.datasource.DataSourceUtil;
 import com.dad.service.dbrouter.TableEntity;
 import com.dad.service.dbrouter.TableRouter;
@@ -29,7 +31,7 @@ public class DayDataDaoImpl implements DayDataDao {
 
 	private static String insertSql = "INSERT IGNORE INTO tb_day_data(device_id,data_code,data_time,cou,min,max,avg,zs_min,zs_max,zs_avg) values(?,?,?,?,?,?,?,?,?,?)";
 
-	private static String getDayDataSql = "SELECT device_id,data_code,data_time,cou,min,max,avg,zs_min,zs_max,zs_avg FROM tb_day_data WHERE device_id=? AND data_code=? AND data_time BETWEEN ? AND ?";
+	private static String getDayDataSql = "SELECT device_id,data_code,data_time,cou,min,max,avg,zs_min,zs_max,zs_avg FROM tb_day_data WHERE device_id=? AND data_code=? AND data_time BETWEEN ? AND ? ORDER BY data_time ASC";
 	
 	@Override
 	public void saveDayDatas(final List<PollutantsCountData> counts,
@@ -163,9 +165,137 @@ public class DayDataDaoImpl implements DayDataDao {
 				});
 	}
 
+	private static final String getMonthDataSql = "SELECT t.device_id,t.data_code,SUM(t.cou),MIN(t.min),MAX(t.max),AVG(t.avg),MIN(t.zs_min),MAX(t.zs_max),AVG(t.zs_avg),DATE_FORMAT(data_time,'%Y%m') months FROM tb_day_data t WHERE t.device_id=? AND t.data_code=? GROUP BY months";
+	
+	@Override
+	public List<MonthCountData> getMonthDatas(final String deviceId, final String dataCode,
+			String year) {
+		
+		TableEntity table = TableRouter.routerTable(year, null);
+		if (table == null) {
+			log.error("{} no table router!", year);
+			return null;
+		}
+		DataSourceUtil.setDataSourceKey(table.getDbKey());
+		
+		return dynamicTemplate.query(getMonthDataSql,
+				new PreparedStatementSetter() {
+					@Override
+					public void setValues(PreparedStatement ps)
+							throws SQLException {
+						ps.setString(1, deviceId);
+						ps.setString(2, dataCode);
+					}
+				}, new RowMapper<MonthCountData>() {
+					@Override
+					public MonthCountData mapRow(ResultSet rs, int rowNum)
+							throws SQLException {
+						MonthCountData plt = new MonthCountData();
+						plt.setDeviceId(rs.getString(1));
+						plt.setCode(rs.getString(2));
+						Object v3 = rs.getObject(3);
+						if (v3 != null) {
+							plt.setCou((Double) v3);
+						}
+						Object v4 = rs.getObject(4);
+						if (v4 != null) {
+							plt.setMin((Double) v4);
+						}
 
+						Object v5 = rs.getObject(5);
+						if (v5 != null) {
+							plt.setMax((Double) v5);
+						}
+						Object v6 = rs.getObject(6);
+						if (v6 != null) {
+							plt.setAvg((Double) v6);
+						}
+						Object v7 = rs.getObject(7);
+						if (v7 != null) {
+							plt.setZsMin((Double)v7);
+						}
+						Object v8 = rs.getObject(8);
+						if (v8 != null) {
+							plt.setZsMax((Double)v8);
+						}
+						Object v9 = rs.getObject(9);
+						if (v9 != null) {
+							plt.setZsAvg((Double)v9);
+						}
+						plt.setMonth(rs.getString(10));
+						return plt;
+					}
+
+				});
+	}
+	
+	//SELECT t.device_id,t.data_code,SUM(t.cou),MIN(t.min),MAX(t.max),AVG(t.avg),MIN(t.zs_min),MAX(t.zs_max),AVG(t.zs_avg), QUARTER(data_time) quarters FROM tb_day_data t WHERE t.device_id='88888880000001' AND t.data_code='01' GROUP BY quarters
+
+	private static final String getQuarterDataSql = "SELECT t.device_id,t.data_code,SUM(t.cou),MIN(t.min),MAX(t.max),AVG(t.avg),MIN(t.zs_min),MAX(t.zs_max),AVG(t.zs_avg), QUARTER(data_time) quarters FROM tb_day_data t WHERE t.device_id=? AND t.data_code=? GROUP BY quarters";
+	@Override
+	public List<QuarterCountData> getQuarterDatas(final String deviceId,
+			final String dataCode, String year) {
+		TableEntity table = TableRouter.routerTable(year, null);
+		if (table == null) {
+			log.error("{} no table router!", year);
+			return null;
+		}
+		DataSourceUtil.setDataSourceKey(table.getDbKey());
+		
+		return dynamicTemplate.query(getQuarterDataSql,
+				new PreparedStatementSetter() {
+					@Override
+					public void setValues(PreparedStatement ps)
+							throws SQLException {
+						ps.setString(1, deviceId);
+						ps.setString(2, dataCode);
+					}
+				}, new RowMapper<QuarterCountData>() {
+					@Override
+					public QuarterCountData mapRow(ResultSet rs, int rowNum)
+							throws SQLException {
+						QuarterCountData plt = new QuarterCountData();
+						plt.setDeviceId(rs.getString(1));
+						plt.setCode(rs.getString(2));
+						Object v3 = rs.getObject(3);
+						if (v3 != null) {
+							plt.setCou((Double) v3);
+						}
+						Object v4 = rs.getObject(4);
+						if (v4 != null) {
+							plt.setMin((Double) v4);
+						}
+
+						Object v5 = rs.getObject(5);
+						if (v5 != null) {
+							plt.setMax((Double) v5);
+						}
+						Object v6 = rs.getObject(6);
+						if (v6 != null) {
+							plt.setAvg((Double) v6);
+						}
+						Object v7 = rs.getObject(7);
+						if (v7 != null) {
+							plt.setZsMin((Double)v7);
+						}
+						Object v8 = rs.getObject(8);
+						if (v8 != null) {
+							plt.setZsMax((Double)v8);
+						}
+						Object v9 = rs.getObject(9);
+						if (v9 != null) {
+							plt.setZsAvg((Double)v9);
+						}
+						plt.setQuarter(rs.getString(10));
+						return plt;
+					}
+
+				});
+	}
+	
 	public void setDynamicTemplate(JdbcTemplate dynamicTemplate) {
 		this.dynamicTemplate = dynamicTemplate;
 	}
+
 
 }

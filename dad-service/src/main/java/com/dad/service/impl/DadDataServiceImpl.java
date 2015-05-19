@@ -9,8 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.dad.common.entity.DevicePollutants;
+import com.dad.common.entity.MonthCountData;
+import com.dad.common.entity.Pollutants;
 import com.dad.common.entity.PollutantsCountData;
 import com.dad.common.entity.PollutantsRtdData;
+import com.dad.common.entity.QuarterCountData;
 import com.dad.common.msg.RtdWarn;
 import com.dad.common.msg.RtdWarnMsg;
 import com.dad.common.service.CacheService;
@@ -37,7 +40,7 @@ public class DadDataServiceImpl implements DadDataService {
 	private DayDataDao dayDataDao;
 
 	private DadService dadService;
-
+	
 	private CacheService dadDataCacheService;
 
 	private RtdWarnMsgSender rtdWarnMsgSender;
@@ -70,24 +73,24 @@ public class DadDataServiceImpl implements DadDataService {
 
 				Double min = setting.getWarnMin();
 				Double max = setting.getWarnMax();
-
+				String type = null;
 				if (min != null && value < min) {
 					// 低于告警
-					RtdWarn warn = new RtdWarn();
-					warn.setCode(rtd.getCode());
-					warn.setMax(max);
-					warn.setRtd(value);
-					warn.setMin(min);
-					warn.setType(RtdWarn.LESS);
-					warns.add(warn);
+					type = RtdWarn.LESS;
 				} else if (max != null && value > max) {
 					// 高于告警
+					type = RtdWarn.OVER;
+				}
+				
+				if(type != null) {
+					Pollutants p = dadService.getPollutantById(rtd.getCode());
 					RtdWarn warn = new RtdWarn();
 					warn.setCode(rtd.getCode());
+					warn.setName(p.getDataName());
 					warn.setMax(max);
 					warn.setMin(min);
 					warn.setRtd(value);
-					warn.setType(RtdWarn.OVER);
+					warn.setType(type);
 					warns.add(warn);
 				}
 			}
@@ -214,6 +217,35 @@ public class DadDataServiceImpl implements DadDataService {
 
 	public void setRtdWarnMsgSender(RtdWarnMsgSender rtdWarnMsgSender) {
 		this.rtdWarnMsgSender = rtdWarnMsgSender;
+	}
+
+	@Override
+	public List<MonthCountData> getMonthDatas(String deviceId, String dataCode,
+			String year) throws Exception {
+		return dayDataDao.getMonthDatas(deviceId, dataCode, year);
+	}
+
+	@Override
+	public List<QuarterCountData> getQuarterDatas(String deviceId,
+			String dataCode, String year) throws Exception {
+		
+		return dayDataDao.getQuarterDatas(deviceId, dataCode, year);
+	}
+
+	@Override
+	public List<PollutantsCountData> getMinuteDatasByDay(String deviceId,
+			String dataCode, String dayTime) throws Exception {
+		Date start = null, end = null;
+		try {
+			start = DateUtil.getDateByString(dayTime, DateUtil.dayFmt);
+			end = DateUtil.getLastTimeOfDay(start);
+		} catch (Exception e) {
+			throw new BusinessServiceException(ErrorConstant.DATE_TIME_ERROR,
+					dayTime);
+		}
+
+		return minuteDataDao.getMinuteDatas(deviceId, dataCode, start, end,
+				dayTime);
 	}
 
 }

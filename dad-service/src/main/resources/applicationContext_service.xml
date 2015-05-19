@@ -18,9 +18,9 @@
 	<bean id="dadDataCacheService" class="com.dad.service.cache.CacheServiceImpl">
 		<property name="cache" ref="dadDataCache" />
 	</bean>
-	
+
 	<bean id="userCacheService" class="com.dad.service.cache.CacheServiceImpl">
-			<property name="cache" ref="userCache" />
+		<property name="cache" ref="userCache" />
 	</bean>
 
 	<bean id="deviceDao" class="com.dad.service.dao.DeviceDaoImpl">
@@ -43,9 +43,14 @@
 		<property name="dynamicTemplate" ref="dynamicTemplate" />
 	</bean>
 
+	<bean id="pollutantDao" class="com.dad.service.dao.PollutantDaoImpl">
+		<property name="baseTemplate" ref="baseTemplate" />
+	</bean>
+
 	<bean id="dadService" class="com.dad.service.impl.DadServiceImpl">
 		<property name="dadCacheService" ref="dadCacheService" />
 		<property name="deviceDao" ref="deviceDao" />
+		<property name="pollutantDao" ref="pollutantDao" />
 	</bean>
 
 	<bean id="dadDataService" class="com.dad.service.impl.DadDataServiceImpl">
@@ -59,11 +64,12 @@
 
 	<bean id="userService" class="com.dad.service.impl.UserServiceImpl">
 		<property name="userDao" ref="userDao" />
-		<property name="userCacheService" ref="userCacheService"/>
+		<property name="userCacheService" ref="userCacheService" />
 	</bean>
 
 	<dubbo:application name="dad-service" />
-	<dubbo:registry protocol="${service.dubbo.protocol}" address="${service.dubbo.address}" />
+	<dubbo:registry protocol="${service.dubbo.protocol}"
+		address="${service.dubbo.address}" />
 	<dubbo:protocol name="dubbo" port="${service.dubbo.port}" />
 	<dubbo:service interface="com.dad.common.service.DadService"
 		ref="dadService" version="1.0" />

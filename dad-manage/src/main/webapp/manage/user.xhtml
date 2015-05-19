@@ -7,6 +7,7 @@
 	<ui:define name="centerContent">
 		<p:breadCrumb>
 			<p:menuitem value="首页" url="#" />
+			<p:menuitem value="系统管理" url="#" />
 			<p:menuitem value="用户管理" url="#" />
 		</p:breadCrumb>
 		<p:toolbar>
@@ -147,6 +148,9 @@
 						paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 						currentPageReportTemplate="#{msgs.paginator_currentPageReportTemplate}"
 						rowsPerPageTemplate="5" selectionMode="single" selection="#{userView.selectedGroup}" rowKey="#{ug.groupId}">
+						<f:facet name="header">
+           					 已关联工厂
+       					</f:facet>
 						<p:column headerText="工厂ID" >
 							<h:outputText value="#{ug.groupId}" />
 						</p:column>
