@@ -28,58 +28,47 @@
 			<p:outputLabel value="排放口:" for="deviceId" />
 			<p:selectOneMenu id="deviceId" style="width:240px"
 								value="#{rtdDataView.deviceId}">
-								<p:ajax listener="#{rtdDataView.deviceSelect}"
-									update="dataCode,growl" />
 								<f:selectItem itemLabel="请选择" itemValue="" />
 								<f:selectItems value="#{rtdDataView.devices}" var="it"
 									itemLabel="#{it.pw}" itemValue="#{it.deviceId}" />
 									</p:selectOneMenu>
 			<p:separator />
-			<p:outputLabel value="污染物:" for="dataCode" />
-			<p:selectOneMenu id="dataCode" style="width:200px"
-								value="#{rtdDataView.dataCode}">
-								<f:selectItem itemLabel="请选择" itemValue="" />
-								<f:selectItems value="#{rtdDataView.plts}" var="it"
-									itemLabel="#{it.dataName}" itemValue="#{it.dataCode}" />
-				</p:selectOneMenu>
-					<p:separator />
-					<p:commandButton value="查询" update="dataGrid,growl"
+
+					<p:commandButton value="查询" update="dataTable,growl"
 						actionListener="#{rtdDataView.refreshData}" />
 				</p:toolbarGroup>
 			</p:toolbar>
 
-			<p:panelGrid  id="dataGrid" style="width:400px">
-				<p:row>
-					<p:column style="width:100px">
-						<h:outputText value="设备号:" />
-					</p:column>
-					<p:column style="width:300px">
-						<h:outputText value="#{rtdDataView.rtdData.deviceId}" />
-					</p:column>
-				</p:row>
-				<p:row>
-					<p:column style="width:100px"><h:outputText value="污染物:" /></p:column>
-					<p:column style="width:300px"><h:outputText value="#{rtdDataView.rtdData.code}" /></p:column>
-				</p:row>
-				<p:row>
-					<p:column style="width:100px"><h:outputText value="时间:" /></p:column>
-					<p:column style="width:300px"><h:outputText value="#{rtdDataView.rtdData.dataTime}" ><f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" timeZone="GMT+8" /></h:outputText></p:column>
-				</p:row>
-				
-				<p:row>
-					<p:column><h:outputText value="值:" /></p:column>
-					<p:column><h:outputText value="#{rtdDataView.rtdData.rtd}" /></p:column>
-				</p:row>
-
-				<p:row>
-					<p:column><h:outputText value="折算值:" /></p:column>
-					<p:column><h:outputText value="#{rtdDataView.rtdData.zsRtd}" /></p:column>
-				</p:row>
-				<p:row>
-					<p:column><h:outputText value="FLAG:" /></p:column>
-					<p:column><h:outputText value="#{rtdDataView.rtdData.flag}" /></p:column>
-				</p:row>
-			</p:panelGrid>
+			<p:dataTable var="d" value="#{rtdDataView.rtdList}" id="dataTable"
+				emptyMessage="没有搜索到数据" paginator="true"
+				paginatorPosition="bottom" rows="15"
+				paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				currentPageReportTemplate="#{msgs.paginator_currentPageReportTemplate}"
+				rowsPerPageTemplate="#{msgs.paginator_rowsPerPageTemplate}" lazy="false">
+				<p:column headerText="设备号" style="width:140px">
+					<h:outputText value="#{d.deviceId}" />
+				</p:column>
+				<p:column headerText="污染物" style="width:180px">
+					<h:outputText value="#{d.name}" />
+				</p:column>
+				<p:column headerText="时间" style="width:160px">
+					<h:outputText value="#{d.dataTime}" >
+					<f:convertDateTime pattern="yyyy-MM-dd HH:mm:ss" timeZone="GMT+8"/>
+					</h:outputText>
+				</p:column>
+					<p:column headerText="值" style="width:140px">
+					<h:outputText value="#{d.rtd}" /><h:outputText value="#{d.dataUnit}" />
+				</p:column>
+				<p:column headerText="折算值" style="width:140px">
+					<h:outputText value="#{d.rtd}" /><h:outputText value="#{d.dataUnit}" />
+				</p:column>
+					<p:column headerText="状态" style="width:140px">
+					<h:outputText value="#{d.flag}" />
+				</p:column>
+				<p:column>
+				</p:column>
+			</p:dataTable>
+			
 		</h:form>
 	</ui:define>
 </ui:composition>

@@ -16,6 +16,7 @@ import com.dad.api.request.MinuteRqst;
 import com.dad.api.request.MonthRqst;
 import com.dad.api.request.PollutantsRqst;
 import com.dad.api.request.QuarterRqst;
+import com.dad.api.request.RtdListRqst;
 import com.dad.api.request.RtdRqst;
 import com.dad.api.request.SetPollutantRqst;
 import com.dad.api.request.UserGroupRqst;
@@ -26,6 +27,7 @@ import com.dad.api.response.GroupDeviceRsp;
 import com.dad.api.response.MonthDataRsp;
 import com.dad.api.response.PollutantsRsp;
 import com.dad.api.response.QuarterDataRsp;
+import com.dad.api.response.RtdListRsp;
 import com.dad.api.response.RtdRsp;
 import com.dad.api.response.UserGroupRsp;
 import com.dad.common.entity.Device;
@@ -324,4 +326,23 @@ public class DadWebApi {
 		return resp;
 	}
 	
+	@ServiceMethod(method = "dad.rtdlist", version = "1.0", needInSession = NeedInSessionType.YES)
+	public Object getRtdList(RtdListRqst request) {
+		if (log.isDebugEnabled()) {
+			log.debug("getRtdList({})", request.getDeviceId());
+		}
+		Object resp = null;
+		try {
+			List<PollutantsRtdData> data = dadDataService.getRtdList(request.getDeviceId());
+			RtdListRsp rsp = new RtdListRsp();
+			rsp.setRtdList(data);
+			resp = rsp;
+		} catch (Exception e) {
+			log.error(e.getMessage(), e);
+			resp = new ServiceUnavailableErrorResponse(request
+					.getRopRequestContext().getMethod(), request
+					.getRopRequestContext().getLocale());
+		}
+		return resp;
+	}
 }

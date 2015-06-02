@@ -7,11 +7,13 @@ import java.util.TreeMap;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.dad.api.request.RtdListRqst;
 import com.dad.api.response.BasicResponse;
 import com.dad.api.response.GroupDeviceRsp;
 import com.dad.api.response.LoginRsp;
 import com.dad.api.response.MonthDataRsp;
 import com.dad.api.response.QuarterDataRsp;
+import com.dad.api.response.RtdListRsp;
 import com.dad.api.response.UserGroupRsp;
 import com.rop.client.ClientRequest;
 import com.rop.client.CompositeResponse;
@@ -237,5 +239,13 @@ public class ApiTest {
 		bindParams.put("year", "2015");
 		CompositeResponse<QuarterDataRsp> loginRsp = ropGet(sessionId,
 				bindParams, QuarterDataRsp.class, "dad.quarterdata");
+	}
+	
+	@Test
+	public void rtdlist() {
+		Map<String, Object> bindParams = new HashMap<String, Object>();
+		bindParams.put("deviceId", "88888880000001");
+		CompositeResponse<RtdListRsp> loginRsp = ropGet(sessionId,
+				bindParams, RtdListRsp.class, "dad.rtdlist");
 	}
 }

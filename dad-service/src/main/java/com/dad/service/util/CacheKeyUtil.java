@@ -5,7 +5,7 @@ public class CacheKeyUtil {
 	private static String deviceUserKey = "c_device_user+%s";
 	private static String devicePltKey = "c_device_plt+%s+%s";
 	private static String devicePltListKey = "c_plt_list+%s";
-	private static String lastRtdDataKey = "c_lastrtd+%s+%s";
+	private static String lastRtdListKey = "c_lastrtdlist+%s";
 	private static String sessionKey = "c_session+%s";
 	private static String userSessionKey = "c_user_session+%s";
 	
@@ -31,8 +31,8 @@ public class CacheKeyUtil {
 		return String.format(devicePltListKey, deviceId);
 	}
 	
-	public static String getLastRtdDataKey(String deviceId, String code) {
-		return String.format(lastRtdDataKey, deviceId,code);
+	public static String getLastRtdListKey(String deviceId) {
+		return String.format(lastRtdListKey, deviceId);
 	}
 	
 	public static String getSessionKey(String session) {

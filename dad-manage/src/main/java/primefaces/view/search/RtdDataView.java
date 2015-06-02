@@ -1,5 +1,6 @@
 package primefaces.view.search;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -37,12 +38,10 @@ public class RtdDataView {
 	private DadService dadService;
 	
 	private String deviceId;
-	private String dataCode;
-	private PollutantsRtdData rtdData = new PollutantsRtdData();
+	private List<PollutantsRtdData> rtdList = new ArrayList<>();
 	
 	private List<Group> groups;
 	private Long groupId;
-	private List<DevicePollutants> plts;
 	private List<Device> devices;
 	
 	@PostConstruct
@@ -74,17 +73,6 @@ public class RtdDataView {
 		}
 	}
 	
-	public void deviceSelect() {
-		try {
-			plts = dadService.getDevicePollutants(deviceId);
-		} catch (Exception e) {
-			FacesMessage message = null;
-			log.error(e.getMessage(), e);
-			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "错误","服务器异常，请重新刷新页面");
-			FacesContext.getCurrentInstance().addMessage(null, message);
-		}
-	}
-	
 	public Long getGroupId() {
 		return groupId;
 	}
@@ -97,9 +85,6 @@ public class RtdDataView {
 		return groups;
 	}
 
-	public List<DevicePollutants> getPlts() {
-		return plts;
-	}
 
 	public List<Device> getDevices() {
 		return devices;
@@ -113,17 +98,16 @@ public class RtdDataView {
 		FacesMessage message = null;
 		if(StringUtils.isEmpty(deviceId)) {
 			message = new FacesMessage(FacesMessage.SEVERITY_WARN, "验证失败","设备号不能为空");
-		} else if(StringUtils.isEmpty(dataCode)) {
-			message = new FacesMessage(FacesMessage.SEVERITY_WARN, "验证失败","污染物代码不能为空");
-		} else {
+		}  else {
 			try {
-				rtdData = dadDataService.getRtdData(deviceId, dataCode);
-				if(rtdData == null) {
-					rtdData = new PollutantsRtdData();
-				} else {
-					String flag = Constants.rtdDataFlags.get(rtdData.getFlag());
-					rtdData.setFlag(flag==null?rtdData.getFlag():flag);
+				rtdList = dadDataService.getRtdList(deviceId);
+				if(CollectionUtils.isNotEmpty(rtdList)) {
+					for(PollutantsRtdData rtd:rtdList) {
+						String flag = Constants.rtdDataFlags.get(rtd.getFlag());
+						rtd.setFlag(flag==null?rtd.getFlag():flag);
+					}
 				}
+				
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
 				message = new FacesMessage(FacesMessage.SEVERITY_WARN, "查询失败","服务器异常");
@@ -143,21 +127,13 @@ public class RtdDataView {
 		this.deviceId = deviceId;
 	}
 
-	public String getDataCode() {
-		return dataCode;
-	}
-
-	public void setDataCode(String dataCode) {
-		this.dataCode = dataCode;
-	}
-
-
 	public void setDadDataService(DadDataService dadDataService) {
 		this.dadDataService = dadDataService;
 	}
 
-	public PollutantsRtdData getRtdData() {
-		return rtdData;
+	public List<PollutantsRtdData> getRtdList() {
+		return rtdList;
 	}
+
 	
 }

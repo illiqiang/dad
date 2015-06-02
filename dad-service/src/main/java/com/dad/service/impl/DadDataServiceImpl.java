@@ -54,12 +54,11 @@ public class DadDataServiceImpl implements DadDataService {
 		RtdWarnMsg msg = new RtdWarnMsg();
 		List<RtdWarn> warns = new ArrayList<>();
 		List<Long> userIds = dadService.getDeviceUserIds(deviceId);
-		for (PollutantsRtdData rtd : rtds) {
-			dadDataCacheService.set(
-					CacheKeyUtil.getLastRtdDataKey(deviceId, rtd.getCode()),
-					rtd);
+		//实时数据入缓存
+		dadDataCacheService.set(CacheKeyUtil.getLastRtdListKey(deviceId), rtds);
+		for (PollutantsRtdData rtd : rtds) {	
 			if(CollectionUtils.isEmpty(userIds)) {
-				continue;
+				break;
 			}
 			Double value = rtd.getRtd();
 			if (value != null) {
@@ -111,8 +110,15 @@ public class DadDataServiceImpl implements DadDataService {
 	@Override
 	public PollutantsRtdData getRtdData(String deviceId, String dataCode)
 			throws Exception {
-		return dadDataCacheService.get(CacheKeyUtil.getLastRtdDataKey(deviceId,
-				dataCode));
+		List<PollutantsRtdData> rtdList = dadDataCacheService.get(CacheKeyUtil.getLastRtdListKey(deviceId));
+		PollutantsRtdData rst = null;
+		for(PollutantsRtdData prt: rtdList) {
+			if(dataCode.equals(prt.getCode())) {
+				rst = prt;
+				break;
+			}
+		}
+		return rst;
 	}
 
 	@Override
@@ -246,6 +252,21 @@ public class DadDataServiceImpl implements DadDataService {
 
 		return minuteDataDao.getMinuteDatas(deviceId, dataCode, start, end,
 				dayTime);
+	}
+
+	@Override
+	public List<PollutantsRtdData> getRtdList(String deviceId) throws Exception {
+		List<PollutantsRtdData> rtdList = dadDataCacheService.get(CacheKeyUtil.getLastRtdListKey(deviceId));
+		
+		if(CollectionUtils.isEmpty(rtdList)) {
+			return null;
+		}
+		for(PollutantsRtdData prt : rtdList){
+			Pollutants p = dadService.getPollutantById(prt.getCode());
+			prt.setName(p.getDataName());
+			prt.setDataUnit(p.getDataUnit());
+		}
+		return rtdList;
 	}
 
 }

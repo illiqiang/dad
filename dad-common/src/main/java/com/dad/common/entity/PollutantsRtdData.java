@@ -11,6 +11,8 @@ public class PollutantsRtdData implements Serializable {
 	private static final long serialVersionUID = -8390688555780539788L;
 
 	private String code;
+	
+	private String name;
 
 	private String deviceId;
 
@@ -21,6 +23,8 @@ public class PollutantsRtdData implements Serializable {
 	private Double zsRtd;
 	
 	private String flag;
+	
+	private String dataUnit;
 
 	public String getCode() {
 		return code;
@@ -68,6 +72,22 @@ public class PollutantsRtdData implements Serializable {
 
 	public void setZsRtd(Double zsRtd) {
 		this.zsRtd = zsRtd;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getDataUnit() {
+		return dataUnit;
+	}
+
+	public void setDataUnit(String dataUnit) {
+		this.dataUnit = dataUnit;
 	}
 
 	@Override

@@ -19,6 +19,8 @@ public interface DadDataService {
 	
 	public PollutantsRtdData getRtdData(String deviceId, String dataCode) throws Exception;
 	
+	public List<PollutantsRtdData> getRtdList(String deviceId) throws Exception;
+	
 	public List<PollutantsCountData> getMinuteDatas(String deviceId, String dataCode, String hourTime)throws Exception;
 	
 	public List<PollutantsCountData> getMinuteDatasByDay(String deviceId, String dataCode, String dayTime)throws Exception;
